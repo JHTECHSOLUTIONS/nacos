@@ -53,4 +53,6 @@ public class UtilAndComs {
     
     public static final String ALL_HOSTS = "00-00---000-ALL_HOSTS-000---00-00";
     
+    public static final String ENABLE_METRICS_MONITOR = "com.alibaba.nacos.client.metrics.monitor.enable";
+    
 }

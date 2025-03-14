@@ -16,6 +16,7 @@
 
 package com.alibaba.nacos.client.monitor;
 
+import com.alibaba.nacos.client.naming.utils.UtilAndComs;
 import io.prometheus.client.Counter;
 import io.prometheus.client.Gauge;
 import io.prometheus.client.Histogram;
@@ -27,16 +28,32 @@ import io.prometheus.client.Histogram;
  */
 public class MetricsMonitor {
     
-    private static final Gauge NACOS_MONITOR = Gauge.build().name("nacos_monitor").labelNames("module", "name")
-            .help("nacos_monitor").register();
+    private static final Gauge NACOS_MONITOR ;
     
-    private static final Histogram NACOS_CLIENT_REQUEST_HISTOGRAM = Histogram.build()
-            .labelNames("module", "method", "url", "code").name("nacos_client_request").help("nacos_client_request")
-            .register();
+    private static final Histogram NACOS_CLIENT_REQUEST_HISTOGRAM ;
     
-    private static final Counter NACOS_CLIENT_NAMING_REQUEST_FAILED_TOTAL = Counter.build()
-            .name("nacos_client_naming_request_failed_total").help("nacos_client_naming_request_failed_total")
-            .labelNames("module", "req_class", "res_status", "res_code", "err_class").register();
+    private static final Counter NACOS_CLIENT_NAMING_REQUEST_FAILED_TOTAL;
+    
+    private static final boolean ENABLE_METRICS_MONITOR = Boolean.parseBoolean(System.getProperty(UtilAndComs.ENABLE_METRICS_MONITOR, "true"));
+    
+    static {
+        if (ENABLE_METRICS_MONITOR) {
+            
+            NACOS_MONITOR = Gauge.build().name("nacos_monitor").labelNames("module", "name").help("nacos_monitor")
+                    .register();
+            
+            NACOS_CLIENT_REQUEST_HISTOGRAM = Histogram.build().labelNames("module", "method", "url", "code")
+                    .name("nacos_client_request").help("nacos_client_request").register();
+            
+            NACOS_CLIENT_NAMING_REQUEST_FAILED_TOTAL = Counter.build().name("nacos_client_naming_request_failed_total")
+                    .help("nacos_client_naming_request_failed_total")
+                    .labelNames("module", "req_class", "res_status", "res_code", "err_class").register();
+        } else {
+            NACOS_MONITOR = null;
+            NACOS_CLIENT_REQUEST_HISTOGRAM = null;
+            NACOS_CLIENT_NAMING_REQUEST_FAILED_TOTAL = null;
+        }
+    }
     
     public static Gauge.Child getServiceInfoMapSizeMonitor() {
         return NACOS_MONITOR.labels("naming", "serviceInfoMapSize");

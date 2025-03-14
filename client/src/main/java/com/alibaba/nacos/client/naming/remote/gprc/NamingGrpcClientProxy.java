@@ -45,7 +45,7 @@ import com.alibaba.nacos.api.selector.AbstractSelector;
 import com.alibaba.nacos.api.selector.SelectorType;
 import com.alibaba.nacos.client.address.ServerListChangeEvent;
 import com.alibaba.nacos.client.env.NacosClientProperties;
-import com.alibaba.nacos.client.monitor.MetricsMonitor;
+import com.alibaba.nacos.client.monitor.MetricsMonitorProxy;
 import com.alibaba.nacos.client.naming.cache.ServiceInfoHolder;
 import com.alibaba.nacos.client.naming.remote.AbstractNamingClientProxy;
 import com.alibaba.nacos.client.naming.remote.gprc.redo.NamingGrpcRedoService;
@@ -479,12 +479,12 @@ public class NamingGrpcClientProxy extends AbstractNamingClientProxy {
      */
     private void recordRequestFailedMetrics(AbstractNamingRequest request, Exception exception, Response response) {
         if (Objects.isNull(response)) {
-            MetricsMonitor.getNamingRequestFailedMonitor(request.getClass().getSimpleName(), MONITOR_LABEL_NONE,
-                    MONITOR_LABEL_NONE, exception.getClass().getSimpleName()).inc();
+            MetricsMonitorProxy.namingRequestFailed(request.getClass().getSimpleName(), MONITOR_LABEL_NONE,
+                    MONITOR_LABEL_NONE, exception.getClass().getSimpleName());
         } else {
-            MetricsMonitor.getNamingRequestFailedMonitor(request.getClass().getSimpleName(),
+            MetricsMonitorProxy.namingRequestFailed(request.getClass().getSimpleName(),
                     String.valueOf(response.getResultCode()), String.valueOf(response.getErrorCode()),
-                    MONITOR_LABEL_NONE).inc();
+                    MONITOR_LABEL_NONE);
         }
     }
     

@@ -21,7 +21,7 @@ import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.pojo.ServiceInfo;
 import com.alibaba.nacos.api.naming.utils.NamingUtils;
 import com.alibaba.nacos.client.env.NacosClientProperties;
-import com.alibaba.nacos.client.monitor.MetricsMonitor;
+import com.alibaba.nacos.client.monitor.MetricsMonitorProxy;
 import com.alibaba.nacos.client.naming.backups.FailoverReactor;
 import com.alibaba.nacos.client.naming.event.InstancesChangeEvent;
 import com.alibaba.nacos.client.naming.event.InstancesDiff;
@@ -136,7 +136,7 @@ public class ServiceInfoHolder implements Closeable {
         if (StringUtils.isBlank(serviceInfo.getJsonFromServer())) {
             serviceInfo.setJsonFromServer(JacksonUtils.toJson(serviceInfo));
         }
-        MetricsMonitor.getServiceInfoMapSizeMonitor().set(serviceInfoMap.size());
+        MetricsMonitorProxy.updateServiceInfoMapSize(serviceInfoMap.size());
         if (diff.hasDifferent()) {
             NAMING_LOGGER.info("current ips:({}) service: {} -> {}", serviceInfo.ipCount(), serviceKey,
                     JacksonUtils.toJson(serviceInfo.getHosts()));
